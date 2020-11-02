@@ -47,7 +47,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -93,6 +93,35 @@
           },
           "message": {
             "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "required": ["status", "errors"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Status code",
+            "example": "500"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 1024,
+            "description": "Message description",
+            "example": "An error occured"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
