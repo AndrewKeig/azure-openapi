@@ -8,6 +8,10 @@ This repo contains two branches, one in js one in ts.
 
 `POST http://localhost:7071/v1/tenants/users`
 
+## swagger document
+
+`src/api.json`
+
 ### Valid request
 
 ```
