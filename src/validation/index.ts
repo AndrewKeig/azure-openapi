@@ -1,4 +1,3 @@
-// @ts-nocheckk
 import { IJsonSchema, OpenAPIV3, OpenAPI } from 'openapi-types';
 import { HttpRequest } from '@azure/functions';
 import OpenAPIRequestValidator, {
@@ -6,6 +5,8 @@ import OpenAPIRequestValidator, {
 } from 'openapi-request-validator';
 import OpenAPIResponseValidator from 'openapi-response-validator';
 import * as api from '../api.json';
+
+// validates request and response, should include all of this in your project
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getServerPath = (oapi: any): string => {
