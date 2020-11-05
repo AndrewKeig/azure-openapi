@@ -2,8 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "Tennant users",
-    "description": "Tennant users api",
+    "title": "Tenant users",
+    "description": "Tenant users api",
     "termsOfService": "http://swagger.io/terms/",
     "license": {
       "name": "Apache 2.0",
@@ -18,10 +18,10 @@
   "paths": {
     "/tenants/users": {
       "post": {
-        "description": "get tennant user",
-        "operationId": "getTennantUsers",
+        "description": "get tenant user",
+        "operationId": "getTenantUsers",
         "requestBody": {
-          "description": "Pet to add to the store",
+          "description": "Get tenant users",
           "required": true,
           "content": {
             "application/json": {

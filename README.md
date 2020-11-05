@@ -4,7 +4,13 @@ This repo contains a sample api which demonstrates, how to use openapi 3.0/swagg
 
 This repo contains two branches, one in js one in ts.
 
+## search tenant users
+
 `POST http://localhost:7071/v1/tenants/users`
+
+## swagger document
+
+`src/api.json`
 
 ### Valid request
 
