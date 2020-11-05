@@ -21,7 +21,7 @@
         "description": "get tennant user",
         "operationId": "getTennantUsers",
         "requestBody": {
-          "description": "Pet to add to the store",
+          "description": "Get tennant users",
           "required": true,
           "content": {
             "application/json": {
