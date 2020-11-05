@@ -2,6 +2,8 @@ const OpenAPIRequestValidator = require('openapi-request-validator').default;
 const OpenAPIResponseValidator = require('openapi-response-validator').default;
 const api = require('../api.json');
 
+//include all of these functions. in your project.
+
 const getServerPath = (oapi) => {
   return oapi.servers && oapi.servers.length > 0 ? oapi.servers[0].url : '';
 };
