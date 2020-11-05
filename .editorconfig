@@ -2,6 +2,5 @@
 indent_style = space
 indent_size = 2
 
-# We recommend you to keep these unchanged
 end_of_line = lf
 charset = utf-8
