@@ -1,6 +1,5 @@
 const OpenAPIRequestValidator = require('openapi-request-validator').default;
 const OpenAPIResponseValidator = require('openapi-response-validator').default;
-const api = require('../api.json');
 
 //include all of these functions. in your project.
 
@@ -12,19 +11,19 @@ const getMethod = (method) => {
   return method ? method.toLowerCase() : '';
 };
 
-const getPath = (originalUrl, basePath) => {
-  return originalUrl.replace(basePath, '');
+const getPath = (url, basePath) => {
+  return url.replace(basePath, '');
 };
 
-const getResource = (path, method) => {
+const getResource = (api, path, method) => {
   return api.paths[path][method];
 };
 
-const validateRequest = (req) => {
+const validateRequest = (api, req) => {
   const serverPath = getServerPath(api);
-  const path = getPath(req.originalUrl, serverPath);
+  const path = getPath(req.url, serverPath);
   const method = getMethod(req.method);
-  const resource = getResource(path, method);
+  const resource = getResource(api, path, method);
 
   const schema = {
     requestBody: resource.requestBody,
@@ -33,22 +32,14 @@ const validateRequest = (req) => {
   };
 
   const requestValidator = new OpenAPIRequestValidator(schema);
-
-  const request = {
-    headers: req.headers,
-    body: req.body,
-    params: req.params,
-    query: req.query,
-  };
-
-  return requestValidator.validateRequest(request);
+  return requestValidator.validateRequest(req.data);
 };
 
-const validateResponse = (req, res, status) => {
+const validateResponse = (api, req, res, status) => {
   const serverPath = getServerPath(api);
-  const path = getPath(req.originalUrl, serverPath);
+  const path = getPath(req.url, serverPath);
   const method = getMethod(req.method);
-  const resource = getResource(path, method);
+  const resource = getResource(api, path, method);
 
   const schema = {
     responses: resource.responses,
