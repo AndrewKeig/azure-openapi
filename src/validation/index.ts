@@ -4,7 +4,6 @@ import OpenAPIRequestValidator, {
   OpenAPIRequestValidatorArgs,
 } from 'openapi-request-validator';
 import OpenAPIResponseValidator from 'openapi-response-validator';
-import * as api from '../api.json';
 
 // validates request and response, should include all of this in your project
 
@@ -54,7 +53,7 @@ const buildRequest = (req: HttpRequest): OpenAPI.Request => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const validateRequest = (req: HttpRequest): any => {
+export const validateRequest = (api: any, req: HttpRequest): any => {
   const serverPath = getServerPath(api);
   const path = getPath(req.url, serverPath);
   const method = getMethod(req.method);
@@ -79,6 +78,8 @@ const buildResponseSchema = (responses: any, components: any): any => {
 };
 
 export const validateResponse = <T>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  api: any,
   req: HttpRequest,
   res: T,
   status: number

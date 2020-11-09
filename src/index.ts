@@ -3,6 +3,7 @@ import { TenantUser, ErrorResponse, Response } from '../src/interfaces';
 import { validateRequest, validateResponse } from '../src/validation';
 import { errorResponse, responseHandler } from '../src/services/response';
 import { getData } from '../src/query';
+import * as api from './api.json';
 
 // generic get  data handler
 const getHandler = async (
@@ -13,7 +14,7 @@ const getHandler = async (
 ): Promise<Response<TenantUser> | Response<ErrorResponse>> => {
   try {
     //validate the request
-    const requestErrors = validateRequest(req);
+    const requestErrors = validateRequest(api, req);
 
     // check
     if (requestErrors) {
@@ -24,7 +25,7 @@ const getHandler = async (
     const data = func();
 
     // validate the response
-    const responseErrors = validateResponse<TenantUser>(req, data, 200);
+    const responseErrors = validateResponse<TenantUser>(api, req, data, 200);
 
     // check if response returns errors
     if (responseErrors) {
