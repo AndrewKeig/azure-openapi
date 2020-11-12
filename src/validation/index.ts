@@ -1,63 +1,99 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IJsonSchema, OpenAPIV3, OpenAPI } from 'openapi-types';
-import { HttpRequest } from '@azure/functions';
 import OpenAPIRequestValidator, {
   OpenAPIRequestValidatorArgs,
 } from 'openapi-request-validator';
 import OpenAPIResponseValidator from 'openapi-response-validator';
 
-// validates request and response, should include all of this in your project
+export declare type HttpMethod =
+  | 'GET'
+  | 'POST'
+  | 'DELETE'
+  | 'HEAD'
+  | 'PATCH'
+  | 'PUT'
+  | 'OPTIONS'
+  | 'TRACE'
+  | 'CONNECT';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getServerPath = (oapi: any): string => {
+export interface HttpRequest {
+  method: HttpMethod | null;
+  url: string;
+  headers: {
+    [key: string]: string;
+  };
+  query: {
+    [key: string]: string;
+  };
+  params: {
+    [key: string]: string;
+  };
+  body?: any;
+  rawBody?: any;
+}
+
+function getServerPath(oapi: any): string {
   return oapi.servers && oapi.servers.length > 0 ? oapi.servers[0].url : '';
-};
+}
 
-const getMethod = (method: string | null): string => {
+function getMethod(method: string | null): string {
   return method ? method.toLowerCase() : '';
-};
+}
 
-const getPath = (originalUrl: string, basePath: string): string => {
+function getPath(originalUrl: string, basePath: string): string {
   return originalUrl.replace(basePath, '');
-};
+}
 
-const getResource = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getResource(
   api: Record<string, any>,
   path: string,
   method: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): any => {
-  return api.paths[path][method];
-};
+): any {
+  if (!api.paths[path]) {
+    throw new Error(`resource ${path} does not exist`);
+  }
 
-const buildRequestSchema = (
+  if (!api.paths[path][method]) {
+    throw new Error(`resource method ${path} ${method} does not exist`);
+  }
+
+  return api.paths[path][method];
+}
+
+function buildRequestSchema(
   requestBody: OpenAPIV3.RequestBodyObject,
   parameters: OpenAPI.Parameters,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   schemas: IJsonSchema | any
-): OpenAPIRequestValidatorArgs => {
+): OpenAPIRequestValidatorArgs {
   return {
     requestBody,
     parameters,
     schemas,
   };
-};
+}
 
-const buildRequest = (req: HttpRequest): OpenAPI.Request => {
+function buildRequest(req: HttpRequest): OpenAPI.Request {
   return {
     headers: req.headers,
     body: req.body,
     params: req.params,
     query: req.query,
   };
-};
+}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const validateRequest = (api: any, req: HttpRequest): any => {
+function buildResponseSchema(responses: any, components: any): any {
+  return {
+    responses,
+    components,
+  };
+}
+
+export function validateRequest(api: any, req: HttpRequest): any {
   const serverPath = getServerPath(api);
   const path = getPath(req.url, serverPath);
   const method = getMethod(req.method);
   const resource = getResource(api, path, method);
+
   const schema = buildRequestSchema(
     resource.requestBody,
     resource.parameters,
@@ -67,24 +103,14 @@ export const validateRequest = (api: any, req: HttpRequest): any => {
   const requestValidator = new OpenAPIRequestValidator(schema);
   const request = buildRequest(req);
   return requestValidator.validateRequest(request);
-};
+}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const buildResponseSchema = (responses: any, components: any): any => {
-  return {
-    responses,
-    components,
-  };
-};
-
-export const validateResponse = <T>(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function validateResponse(
   api: any,
   req: HttpRequest,
-  res: T,
+  res: any,
   status: number
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): any => {
+): any {
   const serverPath = getServerPath(api);
   const path = getPath(req.url, serverPath);
   const method = getMethod(req.method);
@@ -92,4 +118,4 @@ export const validateResponse = <T>(
   const schema = buildResponseSchema(resource.responses, api.components);
   const responseValidator = new OpenAPIResponseValidator(schema);
   return responseValidator.validateResponse(status, res);
-};
+}

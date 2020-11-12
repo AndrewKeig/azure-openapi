@@ -10,7 +10,6 @@ const getHandler = async (
   context: Context,
   req: HttpRequest,
   func: Function
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<Response<TenantUser> | Response<ErrorResponse>> => {
   try {
     //validate the request
@@ -25,7 +24,7 @@ const getHandler = async (
     const data = func();
 
     // validate the response
-    const responseErrors = validateResponse<TenantUser>(api, req, data, 200);
+    const responseErrors = validateResponse(api, req, data, 200);
 
     // check if response returns errors
     if (responseErrors) {
@@ -35,7 +34,7 @@ const getHandler = async (
     // return valid request/response
     return responseHandler<TenantUser>(200, data);
   } catch (err) {
-    return responseHandler<ErrorResponse>(500, errorResponse(err));
+    return responseHandler<ErrorResponse>(500, errorResponse(err.message));
   }
 };
 
